@@ -3,9 +3,6 @@ namespace SpriteKind {
     export const Goomba = SpriteKind.create()
     export const Koopa = SpriteKind.create()
 }
-scene.onOverlapTile(SpriteKind.Player, assets.tile`PSwitch`, function (sprite, location) {
-	
-})
 function Level_SetupStart () {
     game.splash("1 - 1")
     music.play(music.createSong(assets.song`Beginning Level theme`), music.PlaybackMode.UntilDone)
@@ -79,6 +76,33 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Koopa, function (sprite, otherSp
             game.gameOver(false)
         }
     }
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`PSwitch`, function (sprite, location) {
+    tiles.setTileAt(location, assets.tile`Underground Sky`)
+    for (let value of tiles.getTilesByType(assets.tile`Coin Underground`)) {
+        tiles.setTileAt(value, assets.tile`Sky`)
+        tiles.setWallAt(value, true)
+    }
+    for (let value of tiles.getTilesByType(assets.tile`PSwitch Brick`)) {
+        tiles.setTileAt(value, assets.tile`Coin Underground`)
+        tiles.setWallAt(value, false)
+    }
+    for (let value of tiles.getTilesByType(assets.tile`Sky`)) {
+        tiles.setTileAt(value, assets.tile`PSwitch Brick`)
+    }
+    timer.after(15000, function () {
+        for (let value of tiles.getTilesByType(assets.tile`Coin Underground`)) {
+            tiles.setTileAt(value, assets.tile`Sky`)
+            tiles.setWallAt(value, true)
+        }
+        for (let value of tiles.getTilesByType(assets.tile`PSwitch Brick`)) {
+            tiles.setTileAt(value, assets.tile`Coin Underground`)
+            tiles.setWallAt(value, false)
+        }
+        for (let value of tiles.getTilesByType(assets.tile`Sky`)) {
+            tiles.setTileAt(value, assets.tile`PSwitch Brick`)
+        }
+    })
 })
 function Character_Choosing () {
     music.play(music.createSong(assets.song`Character Select Song 1`), music.PlaybackMode.LoopingInBackground)
@@ -220,7 +244,7 @@ let CharacterCharacter_Animations: Image[][] = []
 let MarioLuigi_Player: Sprite = null
 let Where_the_player_is = 0
 let Player_Heli = 0
-if (false) {
+if (true) {
     Peach_Cutscene()
 }
 Character_Choosing()
