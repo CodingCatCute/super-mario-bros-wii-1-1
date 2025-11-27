@@ -36,6 +36,8 @@ function Level_SetupStart () {
     tiles.placeOnTile(MarioLuigi_Player, tiles.getTileLocation(3, 16))
     MarioLuigi_Player.ay = 40
     Animation = 0
+    Checkpoint = 0
+    Checkpoint_used = 0
 }
 function Check_For_Brick_Up () {
     if (tiles.tileAtLocationEquals(MarioLuigi_Player.tilemapLocation().getNeighboringLocation(CollisionDirection.Top).getNeighboringLocation(CollisionDirection.Top), assets.tile`Breakable Brick`)) {
@@ -52,13 +54,25 @@ function Check_For_Pipe_Up () {
         if (MarioLuigi_Player.tilemapLocation().column == 22 && MarioLuigi_Player.tilemapLocation().row == 14 || MarioLuigi_Player.tilemapLocation().column == 23 && MarioLuigi_Player.tilemapLocation().row == 14) {
             tiles.setCurrentTilemap(tilemap`Level`)
             tiles.placeOnTile(MarioLuigi_Player, tiles.getTileLocation(82, 15))
+            Where_the_player_is = 0
         }
     }
     if (Where_the_player_is == 2) {
         if (MarioLuigi_Player.tilemapLocation().column == 10 && MarioLuigi_Player.tilemapLocation().row == 13 || MarioLuigi_Player.tilemapLocation().column == 11 && MarioLuigi_Player.tilemapLocation().row == 13) {
             tiles.setCurrentTilemap(tilemap`Level`)
             tiles.placeOnTile(MarioLuigi_Player, tiles.getTileLocation(189, 17))
+            Where_the_player_is = 0
         }
+    }
+}
+function Die () {
+    if (Checkpoint_used == 0 && Checkpoint == 1) {
+        music.play(music.melodyPlayable(music.powerDown), music.PlaybackMode.InBackground)
+        tiles.placeOnTile(MarioLuigi_Player, tiles.getTileLocation(118, 8))
+        Checkpoint_used = 1
+    } else {
+        music.stopAllSounds()
+        game.gameOver(false)
     }
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Koopa, function (sprite, otherSprite) {
@@ -71,9 +85,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Koopa, function (sprite, otherSp
             Invincibility = 0
             MarioLuigi_Player.ay = 40
         } else {
-            music.stopAllSounds()
-            music.play(music.melodyPlayable(music.powerDown), music.PlaybackMode.InBackground)
-            game.gameOver(false)
+            Die()
         }
     }
 })
@@ -158,9 +170,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Goomba, function (sprite, otherS
             Invincibility = 0
             MarioLuigi_Player.ay = 40
         } else {
-            music.stopAllSounds()
-            music.play(music.melodyPlayable(music.powerDown), music.PlaybackMode.InBackground)
-            game.gameOver(false)
+            Die()
         }
     }
 })
@@ -236,11 +246,13 @@ sprites.onCreated(SpriteKind.Goomba, function (sprite) {
 let Cutscene_Sprite: Sprite = null
 let Koopa_Troopa: Sprite = null
 let Goomba: Sprite = null
-let Character = 0
 let Character_Choosing_Sprite: Sprite = null
 let Invincibility = 0
+let Checkpoint_used = 0
 let Animation = 0
 let CharacterCharacter_Animations: Image[][] = []
+let Character = 0
+let Checkpoint = 0
 let MarioLuigi_Player: Sprite = null
 let Where_the_player_is = 0
 let Player_Heli = 0
@@ -347,6 +359,17 @@ while (true) {
             Check_For_Brick_Up()
         }
     }
+    if (MarioLuigi_Player.tilemapLocation().column == 118 && (MarioLuigi_Player.tilemapLocation().row == 8 || MarioLuigi_Player.tilemapLocation().row == 9)) {
+        if (Checkpoint == 0) {
+            Checkpoint = 1
+            effects.confetti.startScreenEffect(500)
+            if (Character == 0) {
+                tiles.setTileAt(tiles.getTileLocation(118, 8), assets.tile`Mario Checkpoint Top`)
+            } else {
+                tiles.setTileAt(tiles.getTileLocation(118, 8), assets.tile`Luigi Checkpoint Top`)
+            }
+        }
+    }
     if (browserEvents.ArrowDown.isPressed() && (MarioLuigi_Player.tilemapLocation().column == 61 && MarioLuigi_Player.tilemapLocation().row == 15 || MarioLuigi_Player.tilemapLocation().column == 62 && MarioLuigi_Player.tilemapLocation().row == 15)) {
         tiles.setCurrentTilemap(tilemap`Underground P1`)
         tiles.placeOnTile(MarioLuigi_Player, tiles.getTileLocation(3, 13))
@@ -378,8 +401,12 @@ while (true) {
     }
     Variable_Falling()
     if (MarioLuigi_Player.tilemapLocation().getNeighboringLocation(CollisionDirection.Bottom).row == 20) {
+        Die()
+    }
+    if (MarioLuigi_Player.tilemapLocation().column == 234) {
         music.stopAllSounds()
-        game.gameOver(false)
+        music.play(music.createSong(assets.song`Ending`), music.PlaybackMode.UntilDone)
+        game.gameOver(true)
     }
     pause(25)
 }
