@@ -1,6 +1,6 @@
 {
     "name": "Super Mario Bros. Wii! 1-1",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "",
     "dependencies": {
         "device": "*",
