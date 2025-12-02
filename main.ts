@@ -256,6 +256,8 @@ let Checkpoint = 0
 let MarioLuigi_Player: Sprite = null
 let Where_the_player_is = 0
 let Player_Heli = 0
+game.splash("Arrow Keys To Move, Z to use power up. Get to the goal without touching browser's monsters.")
+game.splash("Coins and Question Blocks give you points. Try to get as many points as you can.")
 if (true) {
     Peach_Cutscene()
 }
