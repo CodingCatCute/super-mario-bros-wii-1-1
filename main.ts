@@ -260,8 +260,6 @@ if (true) {
     Peach_Cutscene()
 }
 Character_Choosing()
-game.splash("Arrow Keys to Move, Z to use a helicopter (if applicable.)")
-game.splash("Get to the finish to win, Collect Coins and question blocks to gain points, and don't die to the enemies.")
 pause(1000)
 Level_SetupStart()
 Enemy_Spawning()
